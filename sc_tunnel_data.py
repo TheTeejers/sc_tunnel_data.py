@@ -12,10 +12,10 @@ SAUCE_ACCESS_KEY = os.environ["SAUCE_ACCESS_KEY"]
 user = sys.argv[1]
 
 #Third arg is the user's access key
-user_key = sys.argv[2]
+# user_key = sys.argv[2]
 
 #fourth arg is the tunnel ID
-tunnel_id = sys.argv[3]
+tunnel_id = sys.argv[2]
 
 
 dataCenter = ['us-west-1', 'eu-central-1', 'us-east-1', 'apac-southeast-1']

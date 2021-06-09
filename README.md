@@ -6,6 +6,6 @@ sc_tunnel_data. is a Python library for getting Sauce Labs Sauce Connect Data.
 
 in CMD line:
 
-python sc_tunnel_data.py <sauce_labs_username> <sauce_labs_acces_key> <tunnel_id>
+python sc_tunnel_data.py <sauce_labs_username> <tunnel_id>
 
 It does not matter which DC the tunnel is using, it will return the data.
