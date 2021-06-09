@@ -33,6 +33,7 @@ if int(response.status_code) != 200:
 
 
 print (colored("Release: ", 'green'), response.json()['metadata']['release'])
+print (colored("Command: ", 'green'), response.json()['metadata']['command'])
 
 if str(response.json()['status']) == 'running':
 	print(colored("Status: ", 'green'), colored(response.json()['status'], 'green', attrs=['blink', 'underline']))
