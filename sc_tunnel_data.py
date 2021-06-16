@@ -2,6 +2,7 @@ import sys
 from requests.auth import HTTPBasicAuth
 import os, requests
 from termcolor import (colored)
+import json
 
 SAUCE_USERNAME = os.environ["SAUCE_USERNAME"]
 SAUCE_ACCESS_KEY = os.environ["SAUCE_ACCESS_KEY"]
@@ -65,5 +66,5 @@ if str(response.json()['shared_tunnel']) == 'true':
 else:
 	print (colored("Shared Tunnel: ", 'green'), colored(response.json()['shared_tunnel'], 'red'))
 
-if str(response.json()['metadata']['command_args']) != '':
+if 'command_args' in response.json()['metadata'] in response.json():
 	print (colored("Command Arguments: ", 'green'), response.json()['metadata']['command_args'])
