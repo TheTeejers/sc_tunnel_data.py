@@ -11,41 +11,59 @@ SAUCE_ACCESS_KEY = os.environ["SAUCE_ACCESS_KEY"]
 
 #Enter the Tunnel Owner Username
 user = input(colored("What's the tunnel owner username?\n", "green"))
+# user = 'TheTeejers'
 
+try:
+	tunnelResponse = requests.get('https://api.us-west-1.saucelabs.com/rest/v1/' + user + '/tunnels', auth=HTTPBasicAuth(SAUCE_USERNAME, SAUCE_ACCESS_KEY))
 
-tunnelResponse = requests.get('https://api.us-west-1.saucelabs.com/rest/v1/' + user + '/tunnels', auth=HTTPBasicAuth(SAUCE_USERNAME, SAUCE_ACCESS_KEY))
+	tunnelList = tunnelResponse.json()
 
-tunnelList = tunnelResponse.json()
+	print(tunnelResponse.status_code)
+	print(len(tunnelResponse.json()))
+	if tunnelResponse.status_code != 200:
+		print(colored('No username ' + user + ' in our records.  Please check capitalization and spelling.', 'red'))
+		quit(1)
 
 #if more than one running tunnel, a list is provided
 
-if len(tunnelList) > 0:
-	for x in tunnelList:
-		index = tunnelList.index(x)
-		print( index + 1, ')   ' + x)
-#if the tunnel ID is in the list, input y or n
-	while True:
-		tunnelIsRunning = input(colored("Do you see the tunnel ID in question listed above? (Y/N)\n", "green"))
-	#if y or n not inputted
-		if tunnelIsRunning.capitalize() != 'Y' and tunnelIsRunning.capitalize() != 'N' :
-			print(colored("Please select either Y or N\n", "red"))
-		else:
-			break
+	elif len(tunnelList) > 0:
+		print("yo")
+		for x in tunnelList:
+			index = tunnelList.index(x)
+			print( index + 1, ')   ' + x)
+	#if the tunnel ID is in the list, input y or n
+		while True:
+			tunnelIsRunning = input(colored("Do you see the tunnel ID in question listed above? (Y/N)\n", "green"))
+		#if y or n not inputted
+			if tunnelIsRunning.capitalize() != 'Y' and tunnelIsRunning.capitalize() != 'N' :
+				print(colored("Please select either Y or N\n", "red"))
+			else:
+				break
 
-#if y is input
-	if tunnelIsRunning.capitalize() == "Y":
-#if the tunnel was in the list, select the number in the list
-		tunnelNumber = input(colored("What number is the tunnel in the list?\n", "green"))
-		print(tunnelNumber)
-		for n in tunnelList:
-			selected = tunnelList.index(n) +1
-			if int(tunnelNumber) == int(selected):
-				tunnel_id = n
-#if n is input
-	elif tunnelIsRunning.capitalize() == "N":
-			tunnel_id = input(colored("What's the tunnel ID?\n", "green"))
+	#if y is input
+		if tunnelIsRunning.capitalize() == "Y":
+	#if the tunnel was in the list, select the number in the list
+			while True:
+				tunnelNumber = input(colored("What number is the tunnel in the list?\n", "green"))
+				if int(tunnelNumber) > len(tunnelList):
+					print(colored('Please pick a number in the list above', 'red'))
+				else:
+					break
+			for n in tunnelList:
+				selected = tunnelList.index(n) +1
+				if int(tunnelNumber) == int(selected):
+					tunnel_id = n
 
+	#if n is input
+		elif tunnelIsRunning.capitalize() == "N":
+				tunnel_id = input(colored("What's the tunnel ID?\n", "green"))
 
+	else:
+		print('No running tunnels')
+		tunnel_id = input(colored("What's the tunnel ID?\n", "green"))
+except:
+	print(colored('There was an error', 'red'))
+	quit(1)
 
 
 # print(tunnel_id)
