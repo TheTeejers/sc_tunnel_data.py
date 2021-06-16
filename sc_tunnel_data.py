@@ -12,12 +12,50 @@ SAUCE_ACCESS_KEY = os.environ["SAUCE_ACCESS_KEY"]
 #Enter the Tunnel Owner Username
 user = input(colored("What's the tunnel owner username?\n", "green"))
 
+
+tunnelResponse = requests.get('https://api.us-west-1.saucelabs.com/rest/v1/' + user + '/tunnels', auth=HTTPBasicAuth(SAUCE_USERNAME, SAUCE_ACCESS_KEY))
+
+tunnelList = tunnelResponse.json()
+
+#if more than one running tunnel, a list is provided
+
+if len(tunnelList) > 0:
+	for x in tunnelList:
+		index = tunnelList.index(x)
+		print( index + 1, ')   ' + x)
+#if the tunnel ID is in the list, input y or n
+	while True:
+		tunnelIsRunning = input(colored("Do you see the tunnel ID in question listed above? (Y/N)\n", "green"))
+	#if y or n not inputted
+		if tunnelIsRunning.capitalize() != 'Y' and tunnelIsRunning.capitalize() != 'N' :
+			print(colored("Please select either Y or N\n", "red"))
+		else:
+			break
+
+#if y is input
+	if tunnelIsRunning.capitalize() == "Y":
+#if the tunnel was in the list, select the number in the list
+		tunnelNumber = input(colored("What number is the tunnel in the list?\n", "green"))
+		print(tunnelNumber)
+		for n in tunnelList:
+			selected = tunnelList.index(n) +1
+			if int(tunnelNumber) == int(selected):
+				tunnel_id = n
+#if n is input
+	elif tunnelIsRunning.capitalize() == "N":
+			tunnel_id = input(colored("What's the tunnel ID?\n", "green"))
+
+
+
+
+# print(tunnel_id)
+
 #Example Tunnel Owner Username:
 # user = 'TheTeejers'
 
 
 #enter Tunnel ID:
-tunnel_id = input(colored("What's the tunnel ID?\n", "green"))
+# tunnel_id = input(colored("What's the tunnel ID?\n", "green"))
 
 #example Tunnel ID:
 # tunnel_id = 'eac4e069271a4c14b096665214f2624f'
@@ -66,5 +104,7 @@ if str(response.json()['shared_tunnel']) == 'true':
 else:
 	print (colored("Shared Tunnel: ", 'green'), colored(response.json()['shared_tunnel'], 'red'))
 
-if 'command_args' in response.json()['metadata'] in response.json():
+try:
 	print (colored("Command Arguments: ", 'green'), response.json()['metadata']['command_args'])
+except:
+	print(" ")
