@@ -8,32 +8,45 @@ SAUCE_ACCESS_KEY = os.environ["SAUCE_ACCESS_KEY"]
 
 #First arg in command is sc_tunnel_data.py
 
-#seconf arg is the username
-user = sys.argv[1]
+#Enter the Tunnel Owner Username
+user = input(colored("What's the tunnel owner username?\n", "green"))
 
-#Third arg is the user's access key
-# user_key = sys.argv[2]
-
-#fourth arg is the tunnel ID
-tunnel_id = sys.argv[2]
+#Example Tunnel Owner Username:
+# user = 'TheTeejers'
 
 
-dataCenter = ['us-west-1', 'eu-central-1', 'us-east-1', 'apac-southeast-1']
+#enter Tunnel ID:
+tunnel_id = input(colored("What's the tunnel ID?\n", "green"))
+
+#example Tunnel ID:
+# tunnel_id = 'eac4e069271a4c14b096665214f2624f'
+
+
+dataCenter = ['eu-central-1', 'us-west-1']
+# dataCenter = ['us-west-1', 'eu-central-1', 'us-east-1', 'apac-southeast-1']
+
 region = 0
 
-response = requests.get("https://api."+ dataCenter[region] +".saucelabs.com/rest/v1/" + user +"/tunnels/" + tunnel_id + "" , auth=HTTPBasicAuth(SAUCE_USERNAME, SAUCE_ACCESS_KEY))
+try:
 
-if int(response.status_code) != 200:
-	print(response.status_code)
-	print(dataCenter[region])
-	region =+ 1
-	print(dataCenter[region])
+	for DC in dataCenter:
+		response = requests.get("https://api."+ dataCenter[region] +".saucelabs.com/rest/v1/" + user +"/tunnels/" + tunnel_id + "" , auth=HTTPBasicAuth(SAUCE_USERNAME, SAUCE_ACCESS_KEY))
+		if response.status_code == 200:
+			break
+		else:
+			region =+ 1
 
-	response = requests.get("https://api."+ dataCenter[region] +".saucelabs.com/rest/v1/" + user +"/tunnels/" + tunnel_id + "" , auth=HTTPBasicAuth(SAUCE_USERNAME, SAUCE_ACCESS_KEY))
+	print (colored("Release: ", 'green'), response.json()['metadata']['release'])
+except:
+	print(colored("No tunnel matches the username`/`tunnel ID combination in any datacenter.", "red", attrs=['underline']))
+	quit(1)
 
 
-print (colored("Release: ", 'green'), response.json()['metadata']['release'])
-print (colored("Command: ", 'green'), response.json()['metadata']['command'])
+print (colored("URL: ", 'green'), "https://api."+ dataCenter[region] +".saucelabs.com/rest/v1/" + user +"/tunnels/" + tunnel_id + "")
+
+
+if str(response.json()['metadata']['command']) != '':
+	print (colored("Command: ", 'green'), response.json()['metadata']['command'])
 
 if str(response.json()['status']) == 'running':
 	print(colored("Status: ", 'green'), colored(response.json()['status'], 'green', attrs=['blink', 'underline']))
@@ -52,4 +65,5 @@ if str(response.json()['shared_tunnel']) == 'true':
 else:
 	print (colored("Shared Tunnel: ", 'green'), colored(response.json()['shared_tunnel'], 'red'))
 
-print (colored("Command Arguments: ", 'green'), response.json()['metadata']['command_args'])
+if str(response.json()['metadata']['command_args']) != '':
+	print (colored("Command Arguments: ", 'green'), response.json()['metadata']['command_args'])
