@@ -17,9 +17,14 @@ try:
 	tunnelResponse = requests.get('https://api.us-west-1.saucelabs.com/rest/v1/' + user + '/tunnels', auth=HTTPBasicAuth(SAUCE_USERNAME, SAUCE_ACCESS_KEY))
 
 	tunnelList = tunnelResponse.json()
+	print(colored(len(tunnelList), 'green', attrs=['underline']), colored('tunnels running in the US data center', 'green'))
 
-	print(tunnelResponse.status_code)
-	print(len(tunnelResponse.json()))
+	if len(tunnelList) == 0:
+		tunnelResponse = requests.get('https://api.eu-central-1.saucelabs.com/rest/v1/' + user + '/tunnels', auth=HTTPBasicAuth(SAUCE_USERNAME, SAUCE_ACCESS_KEY))
+
+		tunnelList = tunnelResponse.json()
+		print(colored(len(tunnelList), 'green', attrs=['underline']), colored('tunnels running in the EU data center', 'green'))
+
 	if tunnelResponse.status_code != 200:
 		print(colored('No username ' + user + ' in our records.  Please check capitalization and spelling.', 'red'))
 		quit(1)
@@ -27,7 +32,7 @@ try:
 #if more than one running tunnel, a list is provided
 
 	elif len(tunnelList) > 0:
-		print("yo")
+
 		for x in tunnelList:
 			index = tunnelList.index(x)
 			print( index + 1, ')   ' + x)
