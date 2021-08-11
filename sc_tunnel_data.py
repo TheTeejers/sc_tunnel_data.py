@@ -128,7 +128,7 @@ else:
 	print (colored("Shared Tunnel: ", 'green'), colored(response.json()['shared_tunnel'], 'red'))
 
 try:
-	print (colored("Command Arguments: ", 'green'), response.json()['metadata']['hostname'])
+	print (colored("Hostname: ", 'green'), response.json()['metadata']['hostname'])
 except:
 	print(" ")
 
